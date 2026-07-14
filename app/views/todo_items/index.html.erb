@@ -1,0 +1,39 @@
+<% content_for :title, "Todo List" %>
+
+<main class="todo-app">
+  <section class="todo-shell">
+    <div class="todo-hero">
+      <p class="eyebrow">Rails todo list</p>
+      <h1>Keep the list small and the momentum high.</h1>
+      <p class="lede">Add tasks, mark them complete, and clear them out from one simple Rails page.</p>
+    </div>
+
+    <%= form_with model: @todo_item, class: "todo-form" do |form| %>
+      <%= form.text_field :title, placeholder: "What needs doing?", class: "todo-input", maxlength: 50 %>
+      <%= form.submit "Add task", class: "todo-button" %>
+    <% end %>
+
+    <div class="todo-list">
+      <% if @todo_items.any? %>
+        <% @todo_items.each do |todo_item| %>
+          <article class="todo-card <%= 'is-complete' if todo_item.completed? %>">
+            <div class="todo-card__body">
+              <h2><%= todo_item.title %></h2>
+              <p><%= todo_item.completed? ? "Completed" : "In progress" %></p>
+            </div>
+
+            <div class="todo-card__actions">
+              <%= button_to(todo_item.completed? ? "Reopen" : "Done", todo_item_path(todo_item), method: :patch, form: { class: "inline-form" }, params: { todo_item: { title: todo_item.title, completed: !todo_item.completed? } }, class: "todo-link-button" ) %>
+              <%= button_to "Delete", todo_item_path(todo_item), method: :delete, form: { class: "inline-form" }, class: "todo-link-button todo-link-button--danger" %>
+            </div>
+          </article>
+        <% end %>
+      <% else %>
+        <div class="todo-empty">
+          <h2>No tasks yet.</h2>
+          <p>Add the first one above to get started.</p>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</main>
